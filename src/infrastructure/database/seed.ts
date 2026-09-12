@@ -1,7 +1,8 @@
 import * as dotenv from "dotenv";
 import { connect, disconnect } from "mongoose";
+import postgres from "postgres";
 
-import { ScreeningSchema } from "./schemas/screening.schema";
+import { ScreeningSchema } from "../../modules/screening/infrastructure/database/schemas/screening.schema";
 
 dotenv.config();
 
@@ -12,36 +13,13 @@ interface ScreeningSeed {
 	hallId: string;
 }
 
-const MOVIE_IDS = [
-	"026f20c4-4826-4bea-b5e0-72ce8dda53d4", // Spider-Man: Into the Spider-Verse
-	"0babcaf7-a11f-4fe8-8ec7-783aafdf4e20", // Top Gun: Maverick
-	"0fc5fcfd-4b4e-4614-8c7b-199b056d1fb5", // Apocalypse Now
-	"1a3adf24-14fd-4581-8ade-8166c3e61d9", // Once Upon a Time in America
-	"1f095f9b-29cd-407b-a183-13479a992ad8", // Cargo 200
-	"25872ec3-001a-4dfd-bcde-109f9bf0c640", // F1
-	"2a402c89-ab68-461b-90b7-1b61e777d981", // The Green Mile
-	"2acd1687-bb63-4f91-8fad-f1c097ea7be8", // Goodfellas
-	"36a8bcc2-7315-447d-b727-9dee14d48597", // The Shawshank Redemption
-	"5b8fe8c5-c96c-4b0b-a0e3-1c2fd65dd9c5", // Ford v Ferrari
-	"74664c91-e7c3-4bf7-b8d7-15205f7e4ab3", // Oppenheimer
-	"94121aac-1da7-44fe-9dff-aa7722914b62", // The World's Fastest Indian
-	"98d269f7-da28-40da-80f0-8992e7d2a5ad", // The Truman Show
-	"a1525496-3881-43f9-a5a5-2bb88fb583d2", // Midsommar
-	"b2176a64-5c3e-414a-96cf-357fa958f0bf", // The Godfather
-	"bcb3dba9-5d78-4119-9df3-9a8c6829f59f", // Interstellar
-	"dd9759db-82d8-4202-82fc-9eb82dd45159", // The Fast and the Furious: Tokyo Drift
-	"e4381d0e-92a1-4fec-bc8e-757c4d688c34", // The Godfather Part II
-	"e653eda9-9a49-44de-a1e7-735b2d22e7b5", // Forrest Gump
-];
+interface MovieRow {
+	id: string;
+}
 
-const HALL_IDS = [
-	"0N389om9jkEqdA2Hh8c6q", // Main Hall
-	"AcF68crukJ0nHP200nWqb", // Hall A
-	"CD0JbpCnTUx99i1t1Kct7", // Hall 1
-	"FDuJg6n7XQ6fWEovivzQP", // VIP Hall
-	"fRdcuUCy_Y6fzo4wQLw6y", // Hall B
-	"Hz-Ee-jcRgNilwqc3E3eG", // Hall 2
-];
+interface HallRow {
+	id: string;
+}
 
 const START_DATE = new Date("2026-09-10T00:00:00Z");
 const END_DATE = new Date("2026-12-31T23:59:59Z");
@@ -66,6 +44,40 @@ function randomFrom<T>(arr: T[]): T {
 }
 
 async function main() {
+	// movie-service's DB — read-only, seeding purposes only
+	const movieSql = postgres({
+		host: process.env.MOVIE_DATABASE_HOST,
+		port: Number(process.env.MOVIE_DATABASE_PORT),
+		username: process.env.MOVIE_DATABASE_USERNAME,
+		password: process.env.MOVIE_DATABASE_PASSWORD,
+		database: process.env.MOVIE_DATABASE_NAME,
+	});
+
+	// theater-service's DB — read-only, seeding purposes only
+	const theaterSql = postgres({
+		host: process.env.THEATER_DATABASE_HOST,
+		port: Number(process.env.THEATER_DATABASE_PORT),
+		username: process.env.THEATER_DATABASE_USERNAME,
+		password: process.env.THEATER_DATABASE_PASSWORD,
+		database: process.env.THEATER_DATABASE_NAME,
+	});
+
+	console.log("Fetching movies from movie-service...");
+	const movieRows = await movieSql<MovieRow[]>`SELECT id FROM movies`;
+	const MOVIE_IDS = movieRows.map(m => m.id);
+
+	console.log("Fetching halls from theater-service...");
+	const hallRows = await theaterSql<HallRow[]>`SELECT id FROM halls`;
+	const HALL_IDS = hallRows.map(h => h.id);
+
+	if (!MOVIE_IDS.length || !HALL_IDS.length) {
+		throw new Error("No movies or halls found — seed those services first");
+	}
+
+	console.log(
+		`Found ${MOVIE_IDS.length} movies and ${HALL_IDS.length} halls`,
+	);
+
 	const mongoUri = process.env.MONGO_URI;
 
 	if (!mongoUri) {
@@ -108,7 +120,10 @@ async function main() {
 
 	console.log(`Seed completed! Inserted ${screenings.length} screenings.`);
 
+	await movieSql.end();
+	await theaterSql.end();
 	await disconnect();
+
 	process.exit(0);
 }
 
