@@ -8,7 +8,7 @@ import { Controller } from "@nestjs/common";
 import { GrpcMethod } from "@nestjs/microservices";
 
 import { CreateScreeningUsecase } from "../../application/commands/create-screening.usecase";
-import { GetScreeningUsecase } from "../../application/queries/get-screening";
+import { GetScreeningUsecase } from "../../application/queries/get-screening.usecase";
 import { GetScreeningsByMovieUsecase } from "../../application/queries/get-screenings-by-movie.usecase";
 import { GetScreeningsUsecase } from "../../application/queries/get-screenings.usecase";
 
@@ -35,15 +35,21 @@ export class ScreeningGrpcController {
 
 	@GrpcMethod("ScreeningService", "GetScreenings")
 	public async getAll(data: GetScreeningsRequest) {
-		const screenings = await this.listUc.execute(data);
+		const result = await this.listUc.execute(data);
 
-		return { screenings };
+		return {
+			screenings: result.data,
+			total: result.total,
+		};
 	}
 
 	@GrpcMethod("ScreeningService", "GetScreeningsByMovie")
 	public async getByMovie(data: GetScreeningsByMovieRequest) {
-		const screenings = await this.getByMovieUC.execute(data);
+		const result = await this.getByMovieUC.execute(data);
 
-		return { screenings };
+		return {
+			screenings: result.data,
+			total: result.total,
+		};
 	}
 }

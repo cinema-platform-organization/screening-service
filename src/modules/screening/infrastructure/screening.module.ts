@@ -4,7 +4,7 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { CreateScreeningUsecase } from "../application/commands/create-screening.usecase";
-import { GetScreeningUsecase } from "../application/queries/get-screening";
+import { GetScreeningUsecase } from "../application/queries/get-screening.usecase";
 import { GetScreeningsByMovieUsecase } from "../application/queries/get-screenings-by-movie.usecase";
 import { GetScreeningsUsecase } from "../application/queries/get-screenings.usecase";
 import { HallPort } from "../domain/ports/hall.port";

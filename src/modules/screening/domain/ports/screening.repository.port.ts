@@ -14,10 +14,24 @@ export abstract class ScreeningRepositoryPort {
 		dayStart?: Date,
 		dayEnd?: Date,
 		hallIds?: string[],
+		limit?: number,
+		skip?: number,
 	): Promise<ScreeningEntity[]>;
+	public abstract countByDateRange(
+		dayStart?: Date,
+		dayEnd?: Date,
+		hallIds?: string[],
+	): Promise<number>;
 	public abstract findManyByMovie(
 		movieId: string,
 		dayStart?: Date,
 		dayEnd?: Date,
+		limit?: number,
+		skip?: number,
 	): Promise<ScreeningEntity[]>;
+	public abstract countByMovie(
+		movieId: string,
+		dayStart?: Date,
+		dayEnd?: Date,
+	): Promise<number>;
 }

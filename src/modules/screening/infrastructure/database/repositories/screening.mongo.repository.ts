@@ -52,7 +52,67 @@ export class ScreeningMongoRepository implements ScreeningRepositoryPort {
 		dayStart?: Date,
 		dayEnd?: Date,
 		hallIds?: string[],
+		limit = 20,
+		skip = 0,
 	): Promise<ScreeningEntity[]> {
+		const query = this.buildDateRangeQuery(dayStart, dayEnd, hallIds);
+
+		const docs = await this.screening
+			.find(query)
+			.sort({ startAt: 1 })
+			.skip(skip)
+			.limit(limit)
+			.lean()
+			.exec();
+
+		return docs.map(doc => ScreeningMapper.toEntity(doc));
+	}
+
+	public async countByDateRange(
+		dayStart?: Date,
+		dayEnd?: Date,
+		hallIds?: string[],
+	): Promise<number> {
+		const query = this.buildDateRangeQuery(dayStart, dayEnd, hallIds);
+
+		return this.screening.countDocuments(query).exec();
+	}
+
+	public async findManyByMovie(
+		movieId: string,
+		dateStart?: Date,
+		dateEnd?: Date,
+		limit = 20,
+		skip = 0,
+	): Promise<ScreeningEntity[]> {
+		const query = this.buildMovieQuery(movieId, dateStart, dateEnd);
+
+		const docs = await this.screening
+			.find(query)
+			.sort({ startAt: 1 })
+			.skip(skip)
+			.limit(limit)
+			.lean()
+			.exec();
+
+		return docs.map(doc => ScreeningMapper.toEntity(doc));
+	}
+
+	public async countByMovie(
+		movieId: string,
+		dateStart?: Date,
+		dateEnd?: Date,
+	): Promise<number> {
+		const query = this.buildMovieQuery(movieId, dateStart, dateEnd);
+
+		return this.screening.countDocuments(query).exec();
+	}
+
+	private buildDateRangeQuery(
+		dayStart?: Date,
+		dayEnd?: Date,
+		hallIds?: string[],
+	): QueryFilter<ScreeningDocument> {
 		const query: QueryFilter<ScreeningDocument> = {};
 
 		if (dayStart && dayEnd) {
@@ -62,31 +122,20 @@ export class ScreeningMongoRepository implements ScreeningRepositoryPort {
 			query.hallId = { $in: hallIds };
 		}
 
-		const docs = await this.screening
-			.find(query)
-			.sort({ startAt: 1 })
-			.lean()
-			.exec();
-
-		return docs.map(doc => ScreeningMapper.toEntity(doc));
+		return query;
 	}
 
-	public async findManyByMovie(
+	private buildMovieQuery(
 		movieId: string,
 		dateStart?: Date,
 		dateEnd?: Date,
-	): Promise<ScreeningEntity[]> {
-		const q: QueryFilter<ScreeningDocument> = { movieId };
+	): QueryFilter<ScreeningDocument> {
+		const query: QueryFilter<ScreeningDocument> = { movieId };
+
 		if (dateStart && dateEnd) {
-			q.startAt = { $gte: dateStart, $lt: dateEnd };
+			query.startAt = { $gte: dateStart, $lt: dateEnd };
 		}
 
-		const docs = await this.screening
-			.find(q)
-			.sort({ startAt: 1 })
-			.lean()
-			.exec();
-
-		return docs.map(doc => ScreeningMapper.toEntity(doc));
+		return query;
 	}
 }

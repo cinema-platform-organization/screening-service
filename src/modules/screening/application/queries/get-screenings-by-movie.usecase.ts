@@ -16,17 +16,31 @@ export class GetScreeningsByMovieUsecase {
 		private readonly seatPort: SeatPort,
 	) {}
 
-	public async execute(input: { movieId: string; date?: string }) {
+	public async execute(input: {
+		movieId: string;
+		date?: string;
+		limit?: number;
+		page?: number;
+	}) {
 		const { start, end } = resolveDayRange(input.date);
 
-		const screenings = await this.repository.findManyByMovie(
-			input.movieId,
-			start,
-			end,
-		);
+		const limit = input.limit && input.limit > 0 ? input.limit : 20;
+		const page = input.page && input.page > 0 ? input.page : 1;
+		const skip = (page - 1) * limit;
+
+		const [screenings, total] = await Promise.all([
+			this.repository.findManyByMovie(
+				input.movieId,
+				start,
+				end,
+				limit,
+				skip,
+			),
+			this.repository.countByMovie(input.movieId, start, end),
+		]);
 
 		if (!screenings.length) {
-			return [];
+			return { data: [], total };
 		}
 
 		const theaterCache = new Map<string, Promise<Theater | null>>();
@@ -66,7 +80,7 @@ export class GetScreeningsByMovieUsecase {
 			}),
 		);
 
-		return enriched.filter(Boolean);
+		return { data: enriched.filter(Boolean), total };
 	}
 
 	private getTheaterCached(
