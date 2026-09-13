@@ -1,5 +1,6 @@
 import { PROTO_PATHS } from "@cinema-platform/contracts";
 import { Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 
@@ -32,42 +33,54 @@ import { TheaterGrpcAdapter } from "./grpc/theater.grpc.adapter";
 				schema: ScreeningSchema,
 			},
 		]),
-		ClientsModule.register([
+		ClientsModule.registerAsync([
 			{
 				name: "THEATER_PACKAGE",
-				transport: Transport.GRPC,
-				options: {
-					package: "theater.v1",
-					protoPath: PROTO_PATHS.THEATER,
-					url: "localhost:50054",
-				},
+				inject: [ConfigService],
+				useFactory: (configService: ConfigService) => ({
+					transport: Transport.GRPC,
+					options: {
+						package: "theater.v1",
+						protoPath: PROTO_PATHS.THEATER,
+						url: configService.get<string>("THEATER_GRPC_URL"),
+					},
+				}),
 			},
 			{
 				name: "HALL_PACKAGE",
-				transport: Transport.GRPC,
-				options: {
-					package: "hall.v1",
-					protoPath: PROTO_PATHS.HALL,
-					url: "localhost:50054",
-				},
+				inject: [ConfigService],
+				useFactory: (configService: ConfigService) => ({
+					transport: Transport.GRPC,
+					options: {
+						package: "hall.v1",
+						protoPath: PROTO_PATHS.HALL,
+						url: configService.get<string>("THEATER_GRPC_URL"),
+					},
+				}),
 			},
 			{
 				name: "SEAT_PACKAGE",
-				transport: Transport.GRPC,
-				options: {
-					package: "seat.v1",
-					protoPath: PROTO_PATHS.SEAT,
-					url: "localhost:50054",
-				},
+				inject: [ConfigService],
+				useFactory: (configService: ConfigService) => ({
+					transport: Transport.GRPC,
+					options: {
+						package: "seat.v1",
+						protoPath: PROTO_PATHS.SEAT,
+						url: configService.get<string>("THEATER_GRPC_URL"),
+					},
+				}),
 			},
 			{
 				name: "MOVIE_PACKAGE",
-				transport: Transport.GRPC,
-				options: {
-					package: "movie.v1",
-					protoPath: PROTO_PATHS.MOVIE,
-					url: "localhost:50053",
-				},
+				inject: [ConfigService],
+				useFactory: (configService: ConfigService) => ({
+					transport: Transport.GRPC,
+					options: {
+						package: "movie.v1",
+						protoPath: PROTO_PATHS.MOVIE,
+						url: configService.get<string>("MOVIE_GRPC_URL"),
+					},
+				}),
 			},
 		]),
 	],
