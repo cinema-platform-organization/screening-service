@@ -30,7 +30,11 @@ export class ScreeningMongoRepository implements ScreeningRepositoryPort {
 			.lean()
 			.exec();
 
-		return doc ? ScreeningMapper.toEntity(doc) : null;
+		if (doc) {
+			return ScreeningMapper.toEntity(doc);
+		}
+
+		return null;
 	}
 
 	public async create(entity: ScreeningEntity): Promise<ScreeningEntity> {
@@ -45,7 +49,11 @@ export class ScreeningMongoRepository implements ScreeningRepositoryPort {
 	public async findById(id: string): Promise<ScreeningEntity | null> {
 		const doc = await this.screening.findById(id).lean().exec();
 
-		return doc ? ScreeningMapper.toEntity(doc) : null;
+		if (doc) {
+			return ScreeningMapper.toEntity(doc);
+		}
+
+		return null;
 	}
 
 	public async findByDateRange(
@@ -57,15 +65,22 @@ export class ScreeningMongoRepository implements ScreeningRepositoryPort {
 	): Promise<ScreeningEntity[]> {
 		const query = this.buildDateRangeQuery(dayStart, dayEnd, hallIds);
 
-		const docs = await this.screening
-			.find(query)
-			.sort({ startAt: 1 })
-			.skip(skip)
-			.limit(limit)
-			.lean()
-			.exec();
+		let queryBuilder = this.screening.find(query).sort({ startAt: 1 });
 
-		return docs.map(doc => ScreeningMapper.toEntity(doc));
+		// If a specific date range is provided, bypass pagination entirely
+		const isDateFiltered = dayStart !== undefined && dayEnd !== undefined;
+
+		if (!isDateFiltered) {
+			const activeSkip = skip ?? 0;
+			const activeLimit = limit ?? 20;
+			queryBuilder = queryBuilder.skip(activeSkip).limit(activeLimit);
+		}
+
+		const docs = await queryBuilder.lean().exec();
+
+		return docs.map(doc => {
+			return ScreeningMapper.toEntity(doc);
+		});
 	}
 
 	public async countByDateRange(
@@ -87,15 +102,22 @@ export class ScreeningMongoRepository implements ScreeningRepositoryPort {
 	): Promise<ScreeningEntity[]> {
 		const query = this.buildMovieQuery(movieId, dateStart, dateEnd);
 
-		const docs = await this.screening
-			.find(query)
-			.sort({ startAt: 1 })
-			.skip(skip)
-			.limit(limit)
-			.lean()
-			.exec();
+		let queryBuilder = this.screening.find(query).sort({ startAt: 1 });
 
-		return docs.map(doc => ScreeningMapper.toEntity(doc));
+		// If a date range is provided for the movie, bypass pagination
+		const isDateFiltered = dateStart !== undefined && dateEnd !== undefined;
+
+		if (!isDateFiltered) {
+			const activeSkip = skip ?? 0;
+			const activeLimit = limit ?? 20;
+			queryBuilder = queryBuilder.skip(activeSkip).limit(activeLimit);
+		}
+
+		const docs = await queryBuilder.lean().exec();
+
+		return docs.map(doc => {
+			return ScreeningMapper.toEntity(doc);
+		});
 	}
 
 	public async countByMovie(
