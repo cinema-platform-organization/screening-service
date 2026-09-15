@@ -88,8 +88,8 @@ export class GetScreeningsUsecase {
 
 				return {
 					id: screening.id,
-					startAt: screening.startAt,
-					endAt: screening.endAt,
+					startAt: screening.startAt.toISOString(),
+					endAt: screening.endAt.toISOString(),
 					hall,
 					theater,
 					movie,

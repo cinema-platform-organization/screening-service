@@ -50,3 +50,5 @@ export const ScreeningSchema = SchemaFactory.createForClass(ScreeningModel);
 
 ScreeningSchema.index({ hallId: 1 });
 ScreeningSchema.index({ movieId: 1 });
+ScreeningSchema.index({ hallId: 1, startAt: 1 });
+ScreeningSchema.index({ movieId: 1, startAt: 1 });

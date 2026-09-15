@@ -5,9 +5,14 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { CreateScreeningUsecase } from "../application/commands/create-screening.usecase";
+import { DeleteScreeningUsecase } from "../application/commands/delete-screening.usecase";
+import { UpdateScreeningUsecase } from "../application/commands/update-screening.usecase";
 import { GetScreeningUsecase } from "../application/queries/get-screening.usecase";
 import { GetScreeningsByMovieUsecase } from "../application/queries/get-screenings-by-movie.usecase";
 import { GetScreeningsUsecase } from "../application/queries/get-screenings.usecase";
+import { HasUpcomingScreeningsForHallUsecase } from "../application/queries/has-upcoming-screenings-for-hall.usecase";
+import { HasUpcomingScreeningsForTheaterUsecase } from "../application/queries/has-upcoming-screenings-for-theater.usecase";
+import { BookingPort } from "../domain/ports/booking.port";
 import { HallPort } from "../domain/ports/hall.port";
 import { MoviePort } from "../domain/ports/movie.port";
 import { ScreeningRepositoryPort } from "../domain/ports/screening.repository.port";
@@ -20,6 +25,7 @@ import {
 	ScreeningModel,
 	ScreeningSchema,
 } from "./database/schemas/screening.schema";
+import { BookingGrpcAdapter } from "./grpc/booking.grpc.adapter";
 import { HallGrpcAdapter } from "./grpc/hall.grpc.adapter";
 import { MovieGrpcAdapter } from "./grpc/movie.grpc.adapter";
 import { SeatGrpcAdapter } from "./grpc/seat.grpc.adapter";
@@ -82,6 +88,18 @@ import { TheaterGrpcAdapter } from "./grpc/theater.grpc.adapter";
 					},
 				}),
 			},
+			{
+				name: "BOOKING_PACKAGE",
+				inject: [ConfigService],
+				useFactory: (configService: ConfigService) => ({
+					transport: Transport.GRPC,
+					options: {
+						package: "booking.v1",
+						protoPath: PROTO_PATHS.BOOKING,
+						url: configService.get<string>("BOOKING_GRPC_URL"),
+					},
+				}),
+			},
 		]),
 	],
 	controllers: [ScreeningGrpcController],
@@ -106,10 +124,18 @@ import { TheaterGrpcAdapter } from "./grpc/theater.grpc.adapter";
 			provide: TheaterPort,
 			useClass: TheaterGrpcAdapter,
 		},
+		{
+			provide: BookingPort,
+			useClass: BookingGrpcAdapter,
+		},
 		CreateScreeningUsecase,
 		GetScreeningsUsecase,
 		GetScreeningsByMovieUsecase,
 		GetScreeningUsecase,
+		HasUpcomingScreeningsForHallUsecase,
+		HasUpcomingScreeningsForTheaterUsecase,
+		UpdateScreeningUsecase,
+		DeleteScreeningUsecase,
 	],
 })
 export class ScreeningModule {}

@@ -1,15 +1,14 @@
 import { ScreeningEntity } from "../entities/screening.entity";
 
 export abstract class ScreeningRepositoryPort {
-	public abstract findById(id: string): Promise<ScreeningEntity | null>;
 	public abstract findOverlap(
 		hallId: string,
 		startAt: Date,
 		endAt: Date,
+		excludeId?: string,
 	): Promise<ScreeningEntity | null>;
-	public abstract create(
-		screening: ScreeningEntity,
-	): Promise<ScreeningEntity>;
+	public abstract create(entity: ScreeningEntity): Promise<ScreeningEntity>;
+	public abstract findById(id: string): Promise<ScreeningEntity | null>;
 	public abstract findByDateRange(
 		dayStart?: Date,
 		dayEnd?: Date,
@@ -24,14 +23,26 @@ export abstract class ScreeningRepositoryPort {
 	): Promise<number>;
 	public abstract findManyByMovie(
 		movieId: string,
-		dayStart?: Date,
-		dayEnd?: Date,
+		dateStart?: Date,
+		dateEnd?: Date,
 		limit?: number,
 		skip?: number,
 	): Promise<ScreeningEntity[]>;
 	public abstract countByMovie(
 		movieId: string,
-		dayStart?: Date,
-		dayEnd?: Date,
+		dateStart?: Date,
+		dateEnd?: Date,
 	): Promise<number>;
+	public abstract existsUpcomingByHall(hallId: string): Promise<boolean>;
+	public abstract existsUpcomingByHalls(hallIds: string[]): Promise<boolean>;
+	public abstract update(
+		id: string,
+		data: Partial<{
+			movieId: string;
+			hallId: string;
+			startAt: Date;
+			endAt: Date;
+		}>,
+	): Promise<ScreeningEntity | null>;
+	public abstract delete(id: string): Promise<void>;
 }

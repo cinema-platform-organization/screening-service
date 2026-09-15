@@ -12,8 +12,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(@grpc/grpc-js@1.14.4)(@nestjs/platform-express@11.2.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@cinema-platform/contracts':
-        specifier: ^1.5.0
-        version: 1.5.0(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.3)(reflect-metadata@0.2.2)
+        specifier: ^1.5.4
+        version: 1.5.4(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.3)(reflect-metadata@0.2.2)
       '@cinema-platform/core':
         specifier: ^1.0.4
         version: 1.0.4(@trivago/prettier-plugin-sort-imports@5.2.2(prettier@3.9.6))(prettier@3.9.6)
@@ -346,14 +346,14 @@ packages:
   '@borewit/text-codec@0.2.2':
     resolution: {integrity: sha512-DDaRehssg1aNrH4+2hnj1B7vnUGEjU6OIlyRdkMd0aUdIUvKXrJfXsy8LVtXAy7DRvYVluWbMspsRhz2lcW0mQ==}
 
-  '@bufbuild/protobuf@2.14.1':
-    resolution: {integrity: sha512-agRJn3+EJDUe8AvxTx/LnHA/GErvLE62pSaSk7+MwFOtOv8eWBu/qCq2qoZjBjVZ3C2aiFJCveuSs17KMkYGOw==}
+  '@bufbuild/protobuf@2.15.0':
+    resolution: {integrity: sha512-DAheWUkVr/SJTWCc+lg9dhY0eN4SaWlf4+bG1KzHeXbnqt0AfB/NX0Z+VunGlM1ki1B4zVvye27MpKh/svySUA==}
 
   '@cinema-platform/common@1.2.2':
     resolution: {integrity: sha512-Gp41/t8uSfOEuSkJJSN09RBfWt62MIPWbWqnhLwOrjYal3e+WcD9clbLmMzrtDhDceAGVIqbkPYJd/xD8ujcSA==}
 
-  '@cinema-platform/contracts@1.5.0':
-    resolution: {integrity: sha512-QXQkQmO7Xmn18ghCYtbq96y6MzZ3j798vDCc3RY7V/ZpotY+sX7v/9O64b7B/pPWwV/nlFXJwjc2ZKpPrQCBog==}
+  '@cinema-platform/contracts@1.5.4':
+    resolution: {integrity: sha512-2GPzBtp8bbyQwe9rW2AobVGo2F+XgKJZFnfTuzwfKons8HohUbmRG6robPlb9A3yaiT//FfUpWeLePPEc+2c9A==}
 
   '@cinema-platform/core@1.0.4':
     resolution: {integrity: sha512-EzmBoZhLbfBIJPfjaKPHl0r5Yy2UK1yzKHYXZn2Y5Ar8yF0yBilJ1xXcK1udFr0pMJh6lHox4QxYltlmvDR7gg==}
@@ -2854,8 +2854,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-is@19.2.8:
-    resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
+  react-is@19.3.0:
+    resolution: {integrity: sha512-UpMYezM4v5/18F28aC66AEsjXIgE02kyEMH6yLdgLXu/UTfa1Ntwck/nNLrbqJsEXW7gPb0coNO9FQse9WTovA==}
 
   readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
@@ -3232,8 +3232,8 @@ packages:
   ts-proto-descriptors@2.1.0:
     resolution: {integrity: sha512-S5EZYEQ6L9KLFfjSRpZWDIXDV/W7tAj8uW7pLsihIxyr62EAVSiKuVPwE8iWnr849Bqa53enex1jhDUcpgquzA==}
 
-  ts-proto@2.12.2:
-    resolution: {integrity: sha512-osbffME+UulBWYF+dNhOzQqCTxb43BsAIfGwPaCyYp47HJS/F83mR4OUGuknc5VGR6jYBcXxPdIUe98/H7KhRg==}
+  ts-proto@2.12.3:
+    resolution: {integrity: sha512-n5l51DZKhby2E4T6hS3cCBq1aJNBpVzffdSLR03SyZ6HmZ8K9JprjSPSzJKfxJ5YtyGsIwcCuLWOFcpBzRtEqw==}
     hasBin: true
 
   tsconfig-paths-webpack-plugin@4.2.0:
@@ -3674,11 +3674,11 @@ snapshots:
 
   '@borewit/text-codec@0.2.2': {}
 
-  '@bufbuild/protobuf@2.14.1': {}
+  '@bufbuild/protobuf@2.15.0': {}
 
   '@cinema-platform/common@1.2.2(@grpc/grpc-js@1.14.4)(@nestjs/platform-express@11.2.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
     dependencies:
-      '@cinema-platform/contracts': 1.5.0(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.1)(reflect-metadata@0.2.2)
+      '@cinema-platform/contracts': 1.5.4(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.1)(reflect-metadata@0.2.2)
       '@nestjs/common': 11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/config': 12.0.0(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
       '@nestjs/core': 11.2.1(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.2.3)(@nestjs/platform-express@11.2.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -3700,11 +3700,11 @@ snapshots:
       - rxjs
       - supports-color
 
-  '@cinema-platform/contracts@1.5.0(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.1)(reflect-metadata@0.2.2)':
+  '@cinema-platform/contracts@1.5.4(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.1)(reflect-metadata@0.2.2)':
     dependencies:
       '@nestjs/microservices': 11.2.3(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       rxjs: 7.8.2
-      ts-proto: 2.12.2
+      ts-proto: 2.12.3
     transitivePeerDependencies:
       - '@grpc/grpc-js'
       - '@nestjs/common'
@@ -3719,11 +3719,11 @@ snapshots:
       - nats
       - reflect-metadata
 
-  '@cinema-platform/contracts@1.5.0(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.3)(reflect-metadata@0.2.2)':
+  '@cinema-platform/contracts@1.5.4(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.3)(reflect-metadata@0.2.2)':
     dependencies:
       '@nestjs/microservices': 11.2.3(@grpc/grpc-js@1.14.4)(@nestjs/common@11.2.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.2.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       rxjs: 7.8.2
-      ts-proto: 2.12.2
+      ts-proto: 2.12.3
     transitivePeerDependencies:
       - '@grpc/grpc-js'
       - '@nestjs/common'
@@ -6452,7 +6452,7 @@ snapshots:
   pretty-format@30.5.1:
     dependencies:
       '@jest/react-is-18': react-is@18.3.1
-      '@jest/react-is-19': react-is@19.2.8
+      '@jest/react-is-19': react-is@19.3.0
       '@jest/schemas': 30.5.0
       ansi-styles: 5.2.0
 
@@ -6499,7 +6499,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-is@19.2.8: {}
+  react-is@19.3.0: {}
 
   readable-stream@3.6.2:
     dependencies:
@@ -6850,11 +6850,11 @@ snapshots:
 
   ts-proto-descriptors@2.1.0:
     dependencies:
-      '@bufbuild/protobuf': 2.14.1
+      '@bufbuild/protobuf': 2.15.0
 
-  ts-proto@2.12.2:
+  ts-proto@2.12.3:
     dependencies:
-      '@bufbuild/protobuf': 2.14.1
+      '@bufbuild/protobuf': 2.15.0
       case-anything: 2.1.13
       ts-poet: 6.12.0
       ts-proto-descriptors: 2.1.0
