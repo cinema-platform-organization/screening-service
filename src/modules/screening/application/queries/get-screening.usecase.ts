@@ -2,6 +2,8 @@ import { RpcStatus } from "@cinema-platform/common";
 import { Injectable } from "@nestjs/common";
 import { RpcException } from "@nestjs/microservices";
 
+import { formatScreeningDate } from "@/shared/utils/format-screening-date";
+
 import { HallPort } from "../../domain/ports/hall.port";
 import { MoviePort } from "../../domain/ports/movie.port";
 import { ScreeningRepositoryPort } from "../../domain/ports/screening.repository.port";
@@ -44,8 +46,8 @@ export class GetScreeningUsecase {
 
 		return {
 			id: screening.id,
-			startAt: screening.startAt.toISOString(),
-			endAt: screening.endAt.toISOString(),
+			startAt: formatScreeningDate(screening.startAt),
+			endAt: formatScreeningDate(screening.endAt),
 			hall,
 			theater,
 			movie,

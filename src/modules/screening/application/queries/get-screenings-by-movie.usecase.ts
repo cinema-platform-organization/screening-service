@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { formatScreeningDate } from "@/shared/utils/format-screening-date";
 import { resolveDayRange } from "@/shared/utils/resolve-day-range";
 
 import { Hall, HallPort } from "../../domain/ports/hall.port";
@@ -71,8 +72,8 @@ export class GetScreeningsByMovieUsecase {
 
 				return {
 					id: screening.id,
-					startAt: screening.startAt,
-					endAt: screening.endAt,
+					startAt: formatScreeningDate(screening.startAt),
+					endAt: formatScreeningDate(screening.endAt),
 					hall,
 					theater,
 					seatTypes,
