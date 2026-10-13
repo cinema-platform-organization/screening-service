@@ -48,7 +48,7 @@ export class HallGrpcAdapter implements HallPort, OnModuleInit {
 				this.service.listHallsByTheater({ theaterId }),
 			);
 
-			return res.halls;
+			return res.halls ?? [];
 		} catch (error) {
 			this.logger.error(
 				{ err: error as Error, theaterId },

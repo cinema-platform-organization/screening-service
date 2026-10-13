@@ -27,7 +27,7 @@ export class BookingGrpcAdapter implements BookingPort, OnModuleInit {
 				this.service.existsForScreening({ screeningId }),
 			);
 
-			return res.exists;
+			return res.exists ?? false;
 		} catch (error) {
 			this.logger.error(
 				{ err: error as Error, screeningId },
