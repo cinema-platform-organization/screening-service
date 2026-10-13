@@ -1,24 +1,25 @@
-import { RpcStatus } from "@cinema-platform/common";
+import {
+	isGrpcError,
+	RpcStatus,
+	toRpcException,
+} from "@cinema-platform/common";
 import type { MovieServiceClient } from "@cinema-platform/contracts/gen/ts/movie";
-import { Inject, Injectable, type OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, Logger, type OnModuleInit } from "@nestjs/common";
 import type { ClientGrpc } from "@nestjs/microservices";
-import { RpcException } from "@nestjs/microservices";
-import { PinoLogger } from "nestjs-pino";
 import { lastValueFrom } from "rxjs";
 
 import type { Movie, MoviePort } from "../../domain/ports/movie.port";
 
 @Injectable()
 export class MovieGrpcAdapter implements MoviePort, OnModuleInit {
+	private readonly logger = new Logger(MovieGrpcAdapter.name);
+
 	private service: MovieServiceClient;
 
 	public constructor(
-		private readonly logger: PinoLogger,
 		@Inject("MOVIE_PACKAGE")
 		private readonly client: ClientGrpc,
-	) {
-		this.logger.setContext(MovieGrpcAdapter.name);
-	}
+	) {}
 
 	public onModuleInit() {
 		this.service =
@@ -31,15 +32,16 @@ export class MovieGrpcAdapter implements MoviePort, OnModuleInit {
 
 			return res?.movie ?? null;
 		} catch (error) {
-			if (error instanceof RpcException) {
-				throw error;
+			if (isGrpcError(error) && error.code === RpcStatus.NOT_FOUND) {
+				return null;
 			}
 
-			this.logger.error(`Failed to fetch movie ${id}:`, error);
-			throw new RpcException({
-				code: RpcStatus.INTERNAL,
-				details: "Failed to fetch movie details",
-			});
+			this.logger.error(
+				{ err: error as Error, movieId: id },
+				"Failed to fetch movie",
+			);
+
+			throw toRpcException(error, "Failed to fetch movie details");
 		}
 	}
 }

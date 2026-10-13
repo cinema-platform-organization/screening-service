@@ -44,8 +44,8 @@ interface HallRow {
 	id: string;
 }
 
-const START_DATE = new Date("2026-09-10T00:00:00Z");
-const END_DATE = new Date("2026-12-31T23:59:59Z");
+const START_DATE = new Date("2026-10-01T00:00:00Z");
+const END_DATE = new Date("2027-02-01T23:59:59Z");
 
 const SHOW_TIMES = [10, 13, 16, 19, 22]; // hours of the day a screening can start
 const DURATION_MINUTES = 130; // rough runtime used to compute endAt

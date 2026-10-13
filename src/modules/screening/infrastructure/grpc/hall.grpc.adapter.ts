@@ -1,23 +1,24 @@
-import { RpcStatus } from "@cinema-platform/common";
+import {
+	isGrpcError,
+	RpcStatus,
+	toRpcException,
+} from "@cinema-platform/common";
 import type { HallServiceClient } from "@cinema-platform/contracts/gen/ts/hall";
-import { Inject, Injectable, type OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, Logger, type OnModuleInit } from "@nestjs/common";
 import type { ClientGrpc } from "@nestjs/microservices";
-import { RpcException } from "@nestjs/microservices";
-import { PinoLogger } from "nestjs-pino";
 import { lastValueFrom } from "rxjs";
 
 import type { Hall, HallPort } from "../../domain/ports/hall.port";
 
 @Injectable()
 export class HallGrpcAdapter implements HallPort, OnModuleInit {
+	private readonly logger = new Logger(HallGrpcAdapter.name);
+
 	private service: HallServiceClient;
 
 	public constructor(
-		private readonly logger: PinoLogger,
 		@Inject("HALL_PACKAGE") private readonly client: ClientGrpc,
-	) {
-		this.logger.setContext(HallGrpcAdapter.name);
-	}
+	) {}
 
 	public onModuleInit() {
 		this.service = this.client.getService<HallServiceClient>("HallService");
@@ -29,15 +30,15 @@ export class HallGrpcAdapter implements HallPort, OnModuleInit {
 
 			return res.hall ?? null;
 		} catch (error) {
-			if (error instanceof RpcException) {
-				throw error;
+			if (isGrpcError(error) && error.code === RpcStatus.NOT_FOUND) {
+				return null;
 			}
 
-			this.logger.error(`Failed to fetch hall ${id}:`, error);
-			throw new RpcException({
-				code: RpcStatus.INTERNAL,
-				details: "Failed to fetch hall details",
-			});
+			this.logger.error(
+				{ err: error as Error, hallId: id },
+				"Failed to fetch hall",
+			);
+			throw toRpcException(error, "Failed to fetch hall details");
 		}
 	}
 
@@ -49,18 +50,12 @@ export class HallGrpcAdapter implements HallPort, OnModuleInit {
 
 			return res.halls;
 		} catch (error) {
-			if (error instanceof RpcException) {
-				throw error;
-			}
-
 			this.logger.error(
-				`Failed to list halls for theater ${theaterId}:`,
-				error,
+				{ err: error as Error, theaterId },
+				"Failed to list halls for theater",
 			);
-			throw new RpcException({
-				code: RpcStatus.INTERNAL,
-				details: "Failed to list halls by theater",
-			});
+
+			throw toRpcException(error, "Failed to list halls by theater");
 		}
 	}
 }
