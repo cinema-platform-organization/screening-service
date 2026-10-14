@@ -38,6 +38,7 @@ export class HallGrpcAdapter implements HallPort, OnModuleInit {
 				{ err: error as Error, hallId: id },
 				"Failed to fetch hall",
 			);
+
 			throw toRpcException(error, "Failed to fetch hall details");
 		}
 	}
